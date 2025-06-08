@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lung Cancer Detection</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+  :root {
+    --primary-color: #ff416c;
+    --secondary-color: #ff4b2b;
+    --background-gradient: linear-gradient(135deg, #667eea, #764ba2);
+    --text-light: #fff;
+    --input-bg: rgba(255, 255, 255, 0.15);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--background-gradient);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  nav {
+    background: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+    margin: 0; padding: 0;
+  }
+
+  nav ul li {
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: color 0.3s ease;
+  }
+
+  nav ul li:hover {
+    color: var(--secondary-color);
+  }
+  nav ul li a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  main {
+    flex:1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    flex-direction: column; /* Stacking elements vertically */
+  }
+
+  .prediction-text {
+    margin-top: 2rem; /* Space between form and prediction text */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    color: var(--text-light);
+    text-align: center; /* Center the text */
+  }
+
+  form {
+    background: rgba(255,255,255,0.15);
+    padding: 2.5rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 0 30px var(--secondary-color);
+    width: 100%;
+    max-width: 600px; /* Increased width */
+  }
+
+  form h2 {
+    margin-bottom: 1.8rem;
+    font-size: 2rem;
+    text-align: center;
+    color: var(--secondary-color);
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.4rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--input-bg);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  input[type="text"]:focus {
+    background: #fff;
+    color: #333;
+    outline: none;
+    box-shadow: 0 0 8px var(--secondary-color);
+  }
+
+  button {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--secondary-color);
+    border: none;
+    border-radius: 12px;
+    color: var(--text-light);
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-bottom: 1rem; /* Space between buttons */
+  }
+
+  button:hover {
+    background: var(--primary-color);
+    box-shadow: 0 4px 14px var(--primary-color);
+  }
+
+  @media (max-width: 480px) {
+    form {
+      padding: 2rem 1.5rem;
+      max-width: 320px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('projects') }}">Projects</a></li>
+  </ul>
+</nav>
+
+<main>
+  <form id="lungCancerForm" action="{{  url_for('cancer_predict') }}" method="post" onsubmit="return validateForm()">
+    <h2>Lung Cancer Detection</h2>
+    <label for="gender">Gender</label>
+    <input type="text" id="gender" name="gender" placeholder="( 1 = male, 0 = female)" value="{{ form_values.gender }}" required />
+
+    <label for="age">Age</label>
+    <input type="text" id="age" name="age" placeholder="Enter your age" value="{{ form_values.age }}" required />
+
+    <label for="smoker">Do you Smoke</label>
+    <input type="text" id="smoker" name="smoker" placeholder=" ( 1 = yes, 0 = no )" value="{{ form_values.smoker }}" required />
+
+    <label for="yellow_fingers">Do you have Yellow Fingers</label>
+    <input type="text" id="yellow_fingers" name="yellow_fingers" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.yellow_fingers }}" required />
+
+    <label for="anxiety">Do you have anxiety</label>
+    <input type="text" id="anxiety" name="anxiety" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.anxiety }}" required />
+
+    <label for="peer_pressure">Do you easily succumb to peer pressure</label>
+    <input type="text" id="peer_pressure" name="peer_pressure" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.peer_pressure }}" required />
+
+    <label for="chronic_disease">Do you have any chronic disease</label>
+    <input type="text" id="chronic_disease" name="chronic_disease" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.chronic_disease }}" required />
+
+    <label for="fatigue">Are you feeling fatigued a lot</label>
+    <input type="text" id="fatigue" name="fatigue" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.fatigue }}" required />
+
+    <label for="allergy">Do you have any allergy</label>
+    <input type="text" id="allergy" name="allergy" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.allergy }}" required />
+
+    <label for="wheezing">Do you wheeze</label>
+    <input type="text" id="wheezing" name="wheezing" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.wheezing }}" required />
+
+    <label for="alcohol_consuming">Do you drink alcohol</label>
+    <input type="text" id="alcohol_consuming" name="alcohol_consuming" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.alcohol_consuming }}" required />
+
+    <label for="coughing">Do you cough a lot</label>
+    <input type="text" id="coughing" name="coughing" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.coughing }}" required />
+
+    <label for="shortness_of_breath">Do you find it difficult to breath</label>
+    <input type="text" id="shortness_of_breath" name="shortness_of_breath" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.shortness_of_breath }}" required />
+
+    <label for="swallowing_difficulty">Do you have difficulty swallowing</label>
+    <input type="text" id="swallowing_difficulty" name="swallowing_difficulty" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.swallowing_difficulty }}" required />
+
+    <label for="chest_pain">Do you experience chest pain</label>
+    <input type="text" id="chest_pain" name="chest_pain" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.chest_pain }}" required />
+
+    <button type="submit">Submit</button>
+    <button type="button" onclick="clearForm()">Clear all</button> <!-- Clear all button -->
+  </form>
+
+  <h4 class="prediction-text">{{ prediction_text }}</h4> <!-- Moved prediction text back here -->
+
+  <a class="option" href="{{ url_for('cancer') }}">Refresh Page</a>
+</main>
+
+<script>
+  function clearForm() {
+    document.getElementById("lungCancerForm").reset(); // Clears all text boxes
+  }
+
+  function validateForm() {
+    const inputs = document.querySelectorAll("#lungCancerForm input[type='text']");
+    for (let input of inputs) {
+      if (input.value.trim() === "") {
+        alert("Please fill all the boxes before submitting.");
+        return false; // Prevent form submission
+      }
+    }
+    return true; // Allow form submission
+  }
+
+  // Function to handle arrow key navigation
+  document.getElementById("lungCancerForm").addEventListener("keydown", function(event) {
+    const inputs = Array.from(this.querySelectorAll("input[type='text']"));
+    const currentIndex = inputs.indexOf(document.activeElement);
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault(); // Prevent default scrolling behavior
+      if (currentIndex < inputs.length - 1) {
+        inputs[currentIndex + 1].focus(); // Move to the next input
+      }
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault(); // Prevent default scrolling behavior
+      if (currentIndex > 0) {
+        inputs[currentIndex - 1].focus(); // Move to the previous input
+      }
+    }
+
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Healthcare Website - Home</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+  :root {
+    --primary-color: #ff416c;
+    --secondary-color: #ff4b2b;
+    --accent-color: #1f4037;
+    --background-gradient: linear-gradient(135deg, #667eea, #764ba2);
+    --text-light: #fff;
+    --header-bg-color: rgba(255, 255, 255, 0.15); /* New color for header */
+    --about-bg-color: rgba(255, 255, 255, 0.15); /* New color for about section */
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--background-gradient);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  nav {
+    background: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    border: 3px solid var(--secondary-color); /* Thicker border for navbar */
+    border-radius: 12px; /* Rounded edges for navbar */
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav ul li {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text-light);
+    transition: color 0.3s ease;
+  }
+
+  nav ul li:hover {
+    color: var(--secondary-color);
+  }
+
+  nav ul li a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  header {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 6rem 1rem;
+    text-align: center; /* Center-aligned for header text */
+    background: var(--header-bg-color);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    margin: 3rem auto 4rem auto;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 0 30px var(--secondary-color);
+  }
+
+  header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+    color: var(--secondary-color); /* Same color as About Us */
+  }
+
+  header p {
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  #about-us {
+    max-width: 800px;
+    margin: 0 auto 6rem auto;
+    background: var(--about-bg-color);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px var(--secondary-color);
+  }
+
+  #about-us h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: var(--secondary-color);
+  }
+
+  #about-us p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: justify; /* Justified alignment for about text */
+    color: #f0e5e5;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (max-width: 600px) {
+    nav ul {
+      gap: 1.5rem;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('projects') }}">Projects</a></li>
+    <li><a href="#about-us">About us</a></li>
+  </ul>
+</nav>
+
+<header>
+  <h1>Welcome to Our Healthcare Website</h1>
+  <p>This is a humble project capable of performing two operations. One is detecting lung cancer and another is detecting heart disease
+     based on various attributes. Just fill up the respective QnA forms and you will get your result. 
+  </p>
+</header>
+
+<section id="about-us">
+  <h2>About Us</h2>
+  <p>We are students of Techno Main Salt Lake. We are 4th year students from the Computer Science and Engineering Department. Our group 
+     has 4 students - Soumita Sahu(13000121060), Arghyadeep Mondal(13000121130), Souvik Mondal(13000121132), Soumyadeep Das(13000121136).
+  </p>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>

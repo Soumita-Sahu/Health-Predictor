@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Heart Disease Detection</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+  :root {
+    --primary-color: #ff416c;
+    --secondary-color: #ff4b2b;
+    --background-gradient: linear-gradient(135deg, #667eea, #764ba2);
+    --text-light: #fff;
+    --input-bg: rgba(255, 255, 255, 0.15);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--background-gradient);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  nav {
+    background: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+    margin: 0; padding: 0;
+  }
+
+  nav ul li {
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: color 0.3s ease;
+  }
+
+  nav ul li:hover {
+    color: var(--secondary-color);
+  }
+  nav ul li a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  main {
+    flex:1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    flex-direction: column; /* Stacking elements vertically */
+  }
+
+  .prediction-text {
+    margin-top: 2rem; /* Space between form and prediction text */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    color: var(--text-light);
+    text-align: center; /* Center the text */
+  }
+
+  form {
+    background: rgba(255,255,255,0.15);
+    padding: 2.5rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 0 30px var(--secondary-color);
+    width: 100%;
+    max-width: 600px; /* Increased width */
+  }
+
+  form h2 {
+    margin-bottom: 1.8rem;
+    font-size: 2rem;
+    text-align: center;
+    color: var(--secondary-color);
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.4rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--input-bg);
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  input[type="text"]:focus {
+    background: #fff;
+    color: #333;
+    outline: none;
+    box-shadow: 0 0 8px var(--secondary-color);
+  }
+
+  button {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--secondary-color);
+    border: none;
+    border-radius: 12px;
+    color: var(--text-light);
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-bottom: 1rem; /* Space between buttons */
+  }
+
+  button:hover {
+    background: var(--primary-color);
+    box-shadow: 0 4px 14px var(--primary-color);
+  }
+
+  @media (max-width: 480px) {
+    form {
+      padding: 2rem 1.5rem;
+      max-width: 320px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('projects') }}">Projects</a></li>
+  </ul>
+</nav>
+
+<main>
+  <form id="heartDiseaseForm" action="{{  url_for('heart_predict') }}" method="post" onsubmit="return validateForm()">
+    <h2>Heart Disease Detection</h2>
+    <label for="age">Age</label>
+    <input type="text" id="age" name="age" placeholder="Enter your age" value="{{ form_values.age }}" required />
+    
+    <label for="sex">Sex</label>
+    <input type="text" id="sex" name="sex" placeholder="( 1 = male, 0 = female )" value="{{ form_values.sex }}" required />
+
+    <label for="cp">Chest Pain type</label>
+    <input type="text" id="cp" name="cp" placeholder="( 0 = asymptomatic, 1 = atypical angina, 2 = non anginal, 3 = typical angina )" value="{{ form_values.cp }}" required />
+
+    <label for="trestbps">Resting Blood Pressure</label>
+    <input type="text" id="trestbps" name="trestbps" placeholder="( in mm Hg )" value="{{ form_values.trestbps }}" required />
+
+    <label for="chol">Serum Cholestoral</label>
+    <input type="text" id="chol" name="chol" placeholder="( in mg/dl )" value="{{ form_values.chol }}" required />
+
+    <label for="fbs">Fasting Blood Sugar > 120 mg/dl</label>
+    <input type="text" id="fbs" name="fbs" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.fbs }}" required />
+
+    <label for="restecg">Resting Electrocardiographic Results</label>
+    <input type="text" id="restecg" name="restecg" placeholder="( 2 = ST-T wave abnormality, 1 = normal, 0 = Left ventricular hypertrophy )" value="{{ form_values.restecg }}" required />
+
+    <label for="thalach">Maximum Heartrate achieved</label>
+    <input type="text" id="thalach" name="thalach" placeholder="( Enter your maximum heartrate achieved )" value="{{ form_values.thalach }}" required />
+
+    <label for="exang">Exercise Induced Angina</label>
+    <input type="text" id="exang" name="exang" placeholder="( 1 = yes, 0 = no )" value="{{ form_values.exang }}" required />
+
+    <label for="oldpeak">ST depression induced by exercise relative to rest</label>
+    <input type="text" id="oldpeak" name="oldpeak" placeholder="( Enter oldpeak )" value="{{ form_values.oldpeak }}" required />
+
+    <label for="slope">The slope of the Peak Exercise ST segment</label>
+    <input type="text" id="slope" name="slope" placeholder="( 0 = downsloping, 1 = flat, 2 = upsloping )" value="{{ form_values.slope }}" required />
+
+    <label for="ca">number of major vessels colored by flourosopy</label>
+    <input type="text" id="ca" name="ca" placeholder="( 0-4 )" value="{{ form_values.ca }}" required />
+
+    <label for="thal">Thalassemia types</label>
+    <input type="text" id="thal" name="thal" placeholder="( 1 = fixed, 2 = normal, 3 = reversable defect )" value="{{ form_values.thal }}" required />
+
+    
+
+    <button type="submit">Submit</button>
+    <button type="button" onclick="clearForm()">Clear all</button> <!-- Clear all button -->
+  </form>
+
+  <h4 class="prediction-text">{{ prediction_text2 }}</h4> <!-- Moved prediction text back here -->
+
+  <a class="option" href="{{ url_for('heart') }}">Refresh Page</a>
+</main>
+
+<script>
+  function clearForm() {
+    document.getElementById("heartDiseaseForm").reset(); // Clears all text boxes
+  }
+
+  function validateForm() {
+    const inputs = document.querySelectorAll("#heartDiseaseForm input[type='text']");
+    for (let input of inputs) {
+      if (input.value.trim() === "") {
+        alert("Please fill all the boxes before submitting.");
+        return false; // Prevent form submission
+      }
+    }
+    return true; // Allow form submission
+  }
+
+  // Function to handle arrow key navigation
+  document.getElementById("heartDiseaseForm").addEventListener("keydown", function(event) {
+    const inputs = Array.from(this.querySelectorAll("input[type='text']"));
+    const currentIndex = inputs.indexOf(document.activeElement);
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault(); // Prevent default scrolling behavior
+      if (currentIndex < inputs.length - 1) {
+        inputs[currentIndex + 1].focus(); // Move to the next input
+      }
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault(); // Prevent default scrolling behavior
+      if (currentIndex > 0) {
+        inputs[currentIndex - 1].focus(); // Move to the previous input
+      }
+    }
+
+  });
+</script>
+
+</body>
+</html>
